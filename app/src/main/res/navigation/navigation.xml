@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/landingFragment">
+
+    <fragment
+        android:id="@+id/gameOptionsFragment"
+        android:name="org.chrisolsen.mathops.views.gameoptions.GameOptionsFragment"
+        android:label="Game Options"
+        tools:layout="@layout/game_options_fragment">
+        <action
+            android:id="@+id/action_gameOptionsFragment_to_gameFragment"
+            app:destination="@id/gameFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameFragment"
+        android:name="org.chrisolsen.mathops.views.game.GameFragment"
+        android:label="MathOps"
+        tools:layout="@layout/game_fragment">
+        <argument
+            android:name="question_count"
+            app:argType="integer" />
+        <argument
+            android:name="operation"
+            app:argType="org.chrisolsen.mathops.views.game.Operations" />
+        <action
+            android:id="@+id/action_gameFragment_to_gameOptionsFragment"
+            app:destination="@id/gameOptionsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/landingFragment"
+        android:name="org.chrisolsen.mathops.views.landing.LandingFragment"
+        android:label="MathOps"
+        tools:layout="@layout/landing_fragment">
+        <action
+            android:id="@+id/action_landingFragment_to_gameOptionsFragment"
+            app:destination="@id/gameOptionsFragment" />
+    </fragment>
+</navigation>
