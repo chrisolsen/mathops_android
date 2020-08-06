@@ -28,7 +28,7 @@
             app:argType="integer" />
         <argument
             android:name="operation"
-            app:argType="org.chrisolsen.mathops.views.game.Operations" />
+            app:argType="org.chrisolsen.mathops.views.game.Operation" />
         <action
             android:id="@+id/action_gameFragment_to_gameOptionsFragment"
             app:destination="@id/gameOptionsFragment" />

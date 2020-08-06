@@ -49,13 +49,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="10dp"
-                app:cardCornerRadius="20dp"
-                app:contentPaddingBottom="30dp"
-                app:contentPaddingLeft="20dp"
-                app:contentPaddingRight="20dp"
-                app:contentPaddingTop="36dp">
+                style="@style/AppTheme.GroupBox">
 
                 <RadioGroup
                     android:layout_width="match_parent"
@@ -111,11 +105,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="10dp"
-                app:cardCornerRadius="20dp"
-                app:contentPadding="8dp"
-                app:contentPaddingBottom="24dp">
+                style="@style/AppTheme.GroupBox">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -124,7 +114,7 @@
 
                     <TextView
                         android:id="@+id/question_count_label"
-                        style="@style/TextAppearance.AppCompat.Medium"
+                        style="@style/TextAppearance.AppCompat.Large"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
@@ -134,7 +124,7 @@
 
                     <TextView
                         android:id="@+id/question_count_value"
-                        style="@style/TextAppearance.AppCompat.Medium"
+                        style="@style/TextAppearance.AppCompat.Large"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="15dp"

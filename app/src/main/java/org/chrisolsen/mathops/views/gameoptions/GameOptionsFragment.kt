@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import org.chrisolsen.mathops.R
 import org.chrisolsen.mathops.databinding.GameOptionsFragmentBinding
-import org.chrisolsen.mathops.views.game.Operations
+import org.chrisolsen.mathops.views.game.Operation
 
 class GameOptionsFragment : Fragment() {
 
@@ -36,16 +36,16 @@ class GameOptionsFragment : Fragment() {
         binding.startGame.setOnClickListener { view: View -> startGame(view) }
 
         binding.addition.setOnClickListener { _ ->
-            viewModel.operation.value = Operations.addition
+            viewModel.operation.value = Operation.addition
         }
         binding.subtraction.setOnClickListener { _ ->
-            viewModel.operation.value = Operations.subtraction
+            viewModel.operation.value = Operation.subtraction
         }
         binding.multiplication.setOnClickListener { _ ->
-            viewModel.operation.value = Operations.multiplication
+            viewModel.operation.value = Operation.multiplication
         }
         binding.division.setOnClickListener { _ ->
-            viewModel.operation.value = Operations.division
+            viewModel.operation.value = Operation.division
         }
 
         binding.questionCountSeekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -61,13 +61,13 @@ class GameOptionsFragment : Fragment() {
         return binding.root
     }
 
-    fun startGame(view: View) {
+    private fun startGame(view: View) {
         view
             .findNavController()
             .navigate(
                 GameOptionsFragmentDirections.actionGameOptionsFragmentToGameFragment(
-                    10,
-                    Operations.addition
+                    viewModel.questionCount.value!!,
+                    viewModel.operation.value!!
                 )
             )
     }
