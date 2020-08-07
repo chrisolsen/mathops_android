@@ -42,10 +42,23 @@ data class IncorrectQuestion(val question: Question, val questionIndex: Int)
 class GameViewModel : ViewModel() {
     private val TAG = "GameViewModel"
 
-    private val offset = 5
+    var questionCount = 0
+    lateinit var operation: Operation
+
     private var questionIndex = 0
+    private val offset = 5
     private val incorrectQuestions = mutableListOf<IncorrectQuestion>()
     private val previousQuestions = mutableListOf<Question>()
+
+    fun init(questionCount: Int, operation: Operation) {
+        this.questionCount = questionCount
+        this.operation = operation
+    }
+
+    val currentQuestion: Int
+        get() {
+            return questionIndex + 1
+        }
 
     fun generateAnswerOptions(question: Question): List<Int> {
         val list = IntArray(4)
@@ -70,7 +83,7 @@ class GameViewModel : ViewModel() {
         return list.asList()
     }
 
-    fun generateQuestion(operation: Operation): Question {
+    fun generateQuestion(): Question {
         questionIndex++
         // re-ask previously incorrect question
         if (incorrectQuestions.isNotEmpty()) {

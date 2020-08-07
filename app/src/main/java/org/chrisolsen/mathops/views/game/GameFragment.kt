@@ -28,6 +28,7 @@ class GameFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
         val args = GameFragmentArgs.fromBundle(requireArguments())
+        viewModel.init(args.questionCount, args.operation)
         askQuestion(args)
 
         return binding.root
@@ -35,13 +36,13 @@ class GameFragment : Fragment() {
 
     private fun askQuestion(args: GameFragmentArgs) {
         questionsAsked++
-        if (questionsAsked >= args.questionCount) {
+        if (questionsAsked >= viewModel.questionCount) {
             // TODO: show the game score here
             Log.d("GameFragment", "askQuestion: GAME OVER")
             return
         }
 
-        val question = viewModel.generateQuestion(args.operation)
+        val question = viewModel.generateQuestion()
         binding.questionNumber1.text = question.value1.toString()
         binding.questionNumber2.text = question.value2.toString()
         binding.questionOperation.text = question.symbol
@@ -72,5 +73,8 @@ class GameFragment : Fragment() {
             play(resetScaleX).with(resetScaleY).after(fadeOut)
             start()
         }
+
+        binding.progressBar.progress =
+            binding.progressBar.progress + (100 / viewModel.questionCount)
     }
 }
