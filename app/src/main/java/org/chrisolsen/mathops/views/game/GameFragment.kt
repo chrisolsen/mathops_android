@@ -16,6 +16,7 @@ import org.chrisolsen.mathops.databinding.GameFragmentBinding
 
 class GameFragment : Fragment() {
 
+    private var answerAnimation: AnimatorSet? = null
     private lateinit var viewModel: GameViewModel
     private lateinit var binding: GameFragmentBinding
     private var questionsAsked = 0
@@ -67,7 +68,10 @@ class GameFragment : Fragment() {
         val scaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, 5.0f).apply { duration = 1000 }
         val resetScaleX = ObjectAnimator.ofFloat(view, View.SCALE_X, 1.0f).apply { duration = 0 }
         val resetScaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, 1.0f).apply { duration = 0 }
-        AnimatorSet().apply {
+        answerAnimation?.run {
+            end()
+        }
+        answerAnimation = AnimatorSet().apply {
             play(fadeIn).with(scaleX).with(scaleY)
             play(fadeOut).after(fadeIn)
             play(resetScaleX).with(resetScaleY).after(fadeOut)
