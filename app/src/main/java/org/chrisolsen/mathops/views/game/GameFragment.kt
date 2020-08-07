@@ -11,14 +11,15 @@ import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.*
 import org.chrisolsen.mathops.R
 import org.chrisolsen.mathops.databinding.GameFragmentBinding
 
 class GameFragment : Fragment() {
 
-    private var answerAnimation: AnimatorSet? = null
     private lateinit var viewModel: GameViewModel
     private lateinit var binding: GameFragmentBinding
+    private var answerAnimation: AnimatorSet? = null
     private var questionsAsked = 0
 
     override fun onCreateView(
@@ -57,7 +58,13 @@ class GameFragment : Fragment() {
             } else {
                 animateAnswerStatus(binding.incorrect)
             }
-            askQuestion(args)
+
+            GlobalScope.launch {
+                delay(1000)
+                withContext(Dispatchers.Main) {
+                    askQuestion(args)
+                }
+            }
         }
     }
 
