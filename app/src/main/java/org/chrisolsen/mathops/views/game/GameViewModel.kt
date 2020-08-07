@@ -58,8 +58,9 @@ class GameViewModel : ViewModel() {
             if (i != correctIndex) {
                 while (true) {
                     val r = (minValue..maxValue).random()
-                    if (!list.contains(r)) {
-                        list[i] = r
+                    val value = if (question.answer > 0) Math.abs(r) else -Math.abs(r)
+                    if (!list.contains(value)) {
+                        list[i] = value
                         break
                     }
                 }

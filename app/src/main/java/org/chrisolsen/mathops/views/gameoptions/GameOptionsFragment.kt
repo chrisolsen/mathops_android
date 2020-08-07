@@ -74,7 +74,8 @@ class GameOptionsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider.NewInstanceFactory().create(GameOptionsViewModel::class.java)
+        // FIXME: this view model is re-instantiated ever navigation to this fragment, thereby losing the previously set values that the UI is still showing
+        viewModel = ViewModelProvider(this).get(GameOptionsViewModel::class.java)
 
         viewModel.questionCount.observe(viewLifecycleOwner, Observer { count ->
             val c = if (count == 0) 1 else count
