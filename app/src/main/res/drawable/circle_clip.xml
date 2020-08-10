@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<clip xmlns:android="http://schemas.android.com/apk/res/android">
+    <shape android:shape="oval">
+        <corners android:radius="99dp" />
+        <size
+            android:width="10dp"
+            android:height="10dp" />
+    </shape>
+</clip>

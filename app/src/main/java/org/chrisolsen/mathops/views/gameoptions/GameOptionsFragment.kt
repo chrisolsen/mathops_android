@@ -33,6 +33,24 @@ class GameOptionsFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.game_options_fragment, container, false)
 
+        return binding.root
+    }
+
+
+    private fun startGame(view: View) {
+        view
+            .findNavController()
+            .navigate(
+                GameOptionsFragmentDirections.actionGameOptionsFragmentToGameFragment(
+                    viewModel.questionCount.value!!,
+                    viewModel.operation.value!!
+                )
+            )
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         binding.startGame.setOnClickListener { view: View -> startGame(view) }
 
         binding.addition.setOnClickListener { _ ->
@@ -58,22 +76,6 @@ class GameOptionsFragment : Fragment() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        return binding.root
-    }
-
-    private fun startGame(view: View) {
-        view
-            .findNavController()
-            .navigate(
-                GameOptionsFragmentDirections.actionGameOptionsFragmentToGameFragment(
-                    viewModel.questionCount.value!!,
-                    viewModel.operation.value!!
-                )
-            )
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         // FIXME: this view model is re-instantiated ever navigation to this fragment, thereby losing the previously set values that the UI is still showing
         viewModel = ViewModelProvider(this).get(GameOptionsViewModel::class.java)
 

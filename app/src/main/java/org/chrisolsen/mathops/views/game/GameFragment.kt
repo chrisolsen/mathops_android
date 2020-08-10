@@ -30,6 +30,10 @@ class GameFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.game_fragment, container, false)
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val args = GameFragmentArgs.fromBundle(requireArguments())
         viewModel.init(args.questionCount, args.operation)
 
@@ -47,12 +51,10 @@ class GameFragment : Fragment() {
         }
 
         askQuestion(args)
-
-        return binding.root
     }
 
     private fun askQuestion(args: GameFragmentArgs) {
-        val question: Question = viewModel.generateQuestion()
+        val question: Question = viewModel.currentQuestion
         binding.questionNumber1.text = question.value1.toString()
         binding.questionNumber2.text = question.value2.toString()
         binding.questionOperation.text = question.symbol
@@ -71,7 +73,7 @@ class GameFragment : Fragment() {
             GlobalScope.launch {
                 delay(1000)
                 withContext(Dispatchers.Main) {
-                    if (viewModel.currentQuestion >= viewModel.questionCount) {
+                    if (viewModel.currentQuestionNumber >= viewModel.questionCount) {
                         binding.gameScoreBackground.isClickable = true
                         binding.score.text = viewModel.percentCorrect.toString() + "%"
                         binding.gameScoreText.text = when (viewModel.percentCorrect) {
@@ -113,7 +115,7 @@ class GameFragment : Fragment() {
         }
 
         var progress = binding.progressBar.progress + (100 / viewModel.questionCount)
-        val isLastQuestion = viewModel.questionCount == viewModel.currentQuestion
+        val isLastQuestion = viewModel.questionCount == viewModel.currentQuestionNumber
         progress = if (isLastQuestion) 100 else progress
         ObjectAnimator.ofInt(binding.progressBar, "progress", progress).start()
     }

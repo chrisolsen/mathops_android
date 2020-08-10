@@ -12,6 +12,8 @@ enum class Operation {
 
 data class Question(val value1: Int, val value2: Int, val operation: Operation) {
 
+    private var usersResponse: Int? = null
+
     val answer: Int
         get() {
             return when (operation) {
@@ -33,7 +35,12 @@ data class Question(val value1: Int, val value2: Int, val operation: Operation) 
         }
 
     fun isCorrect(value: Int): Boolean {
+        usersResponse = value
         return value == answer
+    }
+
+    fun isAnswered(): Boolean {
+        return usersResponse != null
     }
 }
 
@@ -44,9 +51,9 @@ class GameViewModel : ViewModel() {
 
     var questionCount = 0
         private set
+
     private lateinit var operation: Operation
     private var questionIndex = -1
-
     private val showAgainOffset = 5
     private val incorrectQuestions = mutableListOf<IncorrectQuestion>()
     private val previousQuestions = mutableListOf<Question>()
@@ -56,9 +63,21 @@ class GameViewModel : ViewModel() {
         this.operation = operation
     }
 
-    val currentQuestion: Int
+    val currentQuestionNumber: Int
         get() {
             return questionIndex + 1
+        }
+
+    var _currentQuestion: Question? = null
+    var currentQuestion: Question
+        get() {
+            if (_currentQuestion == null || _currentQuestion!!.isAnswered()) {
+                return generateQuestion()
+            }
+            return _currentQuestion!!
+        }
+        private set(question) {
+            _currentQuestion = question
         }
 
     val percentCorrect: Int
@@ -109,7 +128,6 @@ class GameViewModel : ViewModel() {
 
         // generate new question
         var attemptCount = 0
-        var question = Question(7, 9, operation)
         existing@ while (true) {
             val num1 = (2..9).random()
             val num2 = (2..9).random()
@@ -118,20 +136,20 @@ class GameViewModel : ViewModel() {
             attemptCount++
             for (q in previousQuestions) {
                 if (q != newQuestion) {
-                    question = newQuestion
+                    currentQuestion = newQuestion
                     break@existing
                 }
             }
 
             if (attemptCount > 99) {
-                question = newQuestion
+                currentQuestion = newQuestion
                 break@existing
             }
         }
 
-        previousQuestions.add(question)
+        previousQuestions.add(currentQuestion!!)
 
-        return question
+        return currentQuestion!!
     }
 
     fun answerQuestion(question: Question, answer: Int): Boolean {
