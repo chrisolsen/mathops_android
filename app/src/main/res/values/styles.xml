@@ -9,9 +9,28 @@
         <item name="android:textColorPrimary">@color/colorPrimary</item>
     </style>
 
+    <style name="AppTheme.Text.Larger" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_size_display_2</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.Text.Large" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_size_display_1</item>
+        <item name="android:textColor">@color/blueGray</item>
+    </style>
+
+    <style name="AppTheme.Text.Small" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_size_body_1</item>
+        <item name="android:textColor">@color/blueGray</item>
+    </style>
+
+    <style name="AppTheme.Text.Small.Light">
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
     <style name="AppTheme.Text.Question" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_size_display_2</item>
-        <item name="android:textColor">@color/gray</item>
+        <item name="android:textColor">@color/blueGray</item>
     </style>
 
     <style name="AppTheme.Text.Question.Highlight">

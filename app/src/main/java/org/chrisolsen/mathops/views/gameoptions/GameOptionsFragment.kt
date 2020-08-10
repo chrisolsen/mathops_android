@@ -50,8 +50,8 @@ class GameOptionsFragment : Fragment() {
 
         binding.questionCountSeekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val p = progress.toFloat() / 100 * 50
-                viewModel.questionCount.value = p.toInt()
+                val p = (progress.toFloat() / 100 * 50).toInt()
+                viewModel.questionCount.value = if (p == 0) 1 else p
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}

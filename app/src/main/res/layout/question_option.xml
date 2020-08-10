@@ -7,7 +7,7 @@
     android:background="@drawable/question_option"
     android:padding="24dp"
     android:gravity="center_horizontal"
-    android:textColor="@color/gray"
+    android:textColor="@color/blueGray"
     android:textSize="@dimen/text_size_display_2"
     android:textAlignment="center"
     tools:text="7" />

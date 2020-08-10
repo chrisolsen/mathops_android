@@ -1,7 +1,7 @@
 package org.chrisolsen.mathops.views.game
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
+import kotlin.math.roundToInt
 
 enum class Operation {
     addition,
@@ -43,10 +43,11 @@ class GameViewModel : ViewModel() {
     private val TAG = "GameViewModel"
 
     var questionCount = 0
-    lateinit var operation: Operation
+        private set
+    private lateinit var operation: Operation
+    private var questionIndex = -1
 
-    private var questionIndex = 0
-    private val offset = 5
+    private val showAgainOffset = 5
     private val incorrectQuestions = mutableListOf<IncorrectQuestion>()
     private val previousQuestions = mutableListOf<Question>()
 
@@ -59,6 +60,17 @@ class GameViewModel : ViewModel() {
         get() {
             return questionIndex + 1
         }
+
+    val percentCorrect: Int
+        get() {
+            return ((questionCount - incorrectQuestions.size).toFloat() * 100 / questionCount).roundToInt()
+        }
+
+    fun reset() {
+        questionIndex = -1
+        incorrectQuestions.clear()
+        previousQuestions.clear()
+    }
 
     fun generateAnswerOptions(question: Question): List<Int> {
         val list = IntArray(4)
@@ -88,7 +100,7 @@ class GameViewModel : ViewModel() {
         // re-ask previously incorrect question
         if (incorrectQuestions.isNotEmpty()) {
             val useIncorrectQuestion =
-                incorrectQuestions.first().questionIndex + offset <= questionIndex
+                incorrectQuestions.first().questionIndex + showAgainOffset <= questionIndex
             if (useIncorrectQuestion) {
                 val incorrectQuestion = incorrectQuestions.removeAt(0)
                 return incorrectQuestion.question
@@ -119,7 +131,6 @@ class GameViewModel : ViewModel() {
 
         previousQuestions.add(question)
 
-        Log.d(TAG, "generateQuestion: $question")
         return question
     }
 
