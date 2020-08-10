@@ -114,7 +114,7 @@ class GameViewModel : ViewModel() {
         return list.asList()
     }
 
-    fun generateQuestion(): Question {
+    private fun generateQuestion(): Question {
         questionIndex++
         // re-ask previously incorrect question
         if (incorrectQuestions.isNotEmpty()) {
@@ -131,7 +131,17 @@ class GameViewModel : ViewModel() {
         existing@ while (true) {
             val num1 = (2..9).random()
             val num2 = (2..9).random()
-            val newQuestion = Question(num1, num2, operation)
+            val newQuestion = when (operation) {
+                Operation.multiplication, Operation.addition -> {
+                    Question(num1, num2, operation)
+                }
+                Operation.subtraction -> {
+                    Question(num1 + num2, num2, operation)
+                }
+                Operation.division -> {
+                    Question(num1 * num2, num2, operation)
+                }
+            }
 
             attemptCount++
             for (q in previousQuestions) {
