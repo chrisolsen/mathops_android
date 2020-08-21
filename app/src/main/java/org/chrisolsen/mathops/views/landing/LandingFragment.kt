@@ -12,6 +12,7 @@ import org.chrisolsen.mathops.databinding.LandingFragmentBinding
 
 class LandingFragment : Fragment() {
 
+    private val TAG = "LandingFragment"
     private lateinit var binding: LandingFragmentBinding
 
     override fun onCreateView(
@@ -24,7 +25,6 @@ class LandingFragment : Fragment() {
             view.findNavController()
                 .navigate(LandingFragmentDirections.actionLandingFragmentToGameOptionsFragment())
         }
-
         return binding.root
     }
 }

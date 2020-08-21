@@ -42,4 +42,9 @@
             android:id="@+id/action_landingFragment_to_gameOptionsFragment"
             app:destination="@id/gameOptionsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/gameLogsFragment"
+        android:name="org.chrisolsen.mathops.views.logs.GameLogFragment"
+        android:label="Logs"
+        tools:layout="@layout/fragment_game_logs" />
 </navigation>

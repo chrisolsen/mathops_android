@@ -83,6 +83,9 @@ class GameFragment : Fragment() {
                             in 80..89 -> "Good Job!"
                             else -> "Great Work!!"
                         }
+                        withContext(Dispatchers.IO) {
+                            viewModel.saveGame()
+                        }
                         binding.gameScore.animate().alpha(1f)
                         binding.gameScoreBanner.animate().run {
                             y(200f)

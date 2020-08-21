@@ -1,6 +1,10 @@
 package org.chrisolsen.mathops.views.game
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import org.chrisolsen.mathops.models.Game
+import org.chrisolsen.mathops.models.MathOpsDatabase
+import java.util.*
 import kotlin.math.roundToInt
 
 enum class Operation {
@@ -10,7 +14,7 @@ enum class Operation {
     division,
 }
 
-data class Question(val value1: Int, val value2: Int, val operation: Operation) {
+class Question(val value1: Int, val value2: Int, val operation: Operation) {
 
     private var usersResponse: Int? = null
 
@@ -44,15 +48,25 @@ data class Question(val value1: Int, val value2: Int, val operation: Operation) 
     }
 }
 
-data class IncorrectQuestion(val question: Question, val questionIndex: Int)
+class IncorrectQuestion(val question: Question, val questionIndex: Int)
 
-class GameViewModel : ViewModel() {
+class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = "GameViewModel"
 
+    lateinit var operation: Operation
+        private set
     var questionCount = 0
         private set
+    val correctCount: Int
+        get() {
+            return questionCount - incorrectQuestions.size
+        }
+    val durationSeconds: Long
+        get() {
+            return (Date().time - startTime) / 1000
+        }
 
-    private lateinit var operation: Operation
+    private var startTime = 0L
     private var questionIndex = -1
     private val showAgainOffset = 5
     private val incorrectQuestions = mutableListOf<IncorrectQuestion>()
@@ -61,6 +75,7 @@ class GameViewModel : ViewModel() {
     fun init(questionCount: Int, operation: Operation) {
         this.questionCount = questionCount
         this.operation = operation
+        this.startTime = Date().time
     }
 
     val currentQuestionNumber: Int
@@ -89,6 +104,7 @@ class GameViewModel : ViewModel() {
         questionIndex = -1
         incorrectQuestions.clear()
         previousQuestions.clear()
+        startTime = Date().time
     }
 
     fun generateAnswerOptions(question: Question): List<Int> {
@@ -112,6 +128,17 @@ class GameViewModel : ViewModel() {
         }
 
         return list.asList()
+    }
+
+    suspend fun saveGame() {
+        val game = Game(
+            operation = operation.toString(),
+            duration = durationSeconds,
+            correctCount = correctCount,
+            questionCount = questionCount,
+            timestamp = Date().time
+        )
+        MathOpsDatabase(getApplication()).gameDao().insert(game)
     }
 
     private fun generateQuestion(): Question {

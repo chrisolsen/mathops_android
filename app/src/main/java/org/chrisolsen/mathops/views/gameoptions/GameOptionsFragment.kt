@@ -1,9 +1,7 @@
 package org.chrisolsen.mathops.views.gameoptions
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.databinding.DataBindingUtil
@@ -17,12 +15,6 @@ import org.chrisolsen.mathops.views.game.Operation
 
 class GameOptionsFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = GameOptionsFragment()
-    }
-
-    val TAG = "GameOptionsFragment"
-
     private lateinit var viewModel: GameOptionsViewModel
     private lateinit var binding: GameOptionsFragmentBinding
 
@@ -33,19 +25,8 @@ class GameOptionsFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.game_options_fragment, container, false)
 
+        setHasOptionsMenu(true)
         return binding.root
-    }
-
-
-    private fun startGame(view: View) {
-        view
-            .findNavController()
-            .navigate(
-                GameOptionsFragmentDirections.actionGameOptionsFragmentToGameFragment(
-                    viewModel.questionCount.value!!,
-                    viewModel.operation.value!!
-                )
-            )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,13 +57,36 @@ class GameOptionsFragment : Fragment() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        // FIXME: this view model is re-instantiated ever navigation to this fragment, thereby losing the previously set values that the UI is still showing
         viewModel = ViewModelProvider(this).get(GameOptionsViewModel::class.java)
-
         viewModel.questionCount.observe(viewLifecycleOwner, Observer { count ->
             val c = if (count == 0) 1 else count
             binding.questionCountValue.text = c.toString()
         })
+    }
+
+    private fun startGame(view: View) {
+        view
+            .findNavController()
+            .navigate(
+                GameOptionsFragmentDirections.actionGameOptionsFragmentToGameFragment(
+                    viewModel.questionCount.value!!,
+                    viewModel.operation.value!!
+                )
+            )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_game_stats -> {
+                view?.findNavController()?.navigate(R.id.gameLogsFragment)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
 
