@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ class GameFragment : Fragment() {
     private lateinit var viewModel: GameViewModel
     private lateinit var binding: GameFragmentBinding
     private var answerAnimation: AnimatorSet? = null
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,12 +37,13 @@ class GameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val args = GameFragmentArgs.fromBundle(requireArguments())
-        viewModel.init(args.questionCount, args.operation)
+        viewModel.init(args.question_count, args.operation)
 
-        binding.playAgain.setOnClickListener { view: View ->
-            binding.gameScoreBackground.isClickable = false
-            binding.gameScore.animate().alpha(0f)
-            binding.gameScoreBanner.animate().run {
+        binding.banner.playAgain.setOnClickListener { view: View ->
+            Log.d(TAG, "onViewCreated: PLAY AGAIN!!")
+//            binding.gameScoreBackground.isClickable = false
+            binding.gameScoreBackground.animate().alpha(0f)
+            binding.banner.gameScoreBanner.animate().run {
                 y(Resources.getSystem().displayMetrics.heightPixels.toFloat())
                 interpolator = AnticipateOvershootInterpolator()
                 duration = 500
@@ -63,20 +66,20 @@ class GameFragment : Fragment() {
         val adapter = context?.let { ArrayAdapter(it, R.layout.question_option, answers) }
         binding.answerOptions.adapter = adapter
         binding.answerOptions.setOnItemClickListener { _: ViewGroup, _: View, position: Int, _: Long ->
-
+            Log.d(TAG, "askQuestion: ANSWER CLICKED")
             if (viewModel.answerQuestion(question, answers.get(position))) {
                 animateAnswerStatus(binding.correct)
             } else {
                 animateAnswerStatus(binding.incorrect)
             }
 
-            GlobalScope.launch {
+            scope.launch {
                 delay(1000)
                 withContext(Dispatchers.Main) {
                     if (viewModel.currentQuestionNumber >= viewModel.questionCount) {
-                        binding.gameScoreBackground.isClickable = true
-                        binding.score.text = viewModel.percentCorrect.toString() + "%"
-                        binding.gameScoreText.text = when (viewModel.percentCorrect) {
+//                        binding.gameScoreBackground.isClickable = true
+                        binding.banner.score.text = viewModel.percentCorrect.toString() + "%"
+                        binding.banner.gameScoreText.text = when (viewModel.percentCorrect) {
                             in 0..50 -> "Keep Trying!"
                             in 51..60 -> "Getting Better!"
                             in 61..79 -> "Keep It Up!"
@@ -86,8 +89,8 @@ class GameFragment : Fragment() {
                         withContext(Dispatchers.IO) {
                             viewModel.saveGame()
                         }
-                        binding.gameScore.animate().alpha(1f)
-                        binding.gameScoreBanner.animate().run {
+                        binding.banner.gameScoreBackground.animate().alpha(1f)
+                        binding.banner.gameScoreBanner.animate().run {
                             y(200f)
                             interpolator = AnticipateOvershootInterpolator()
                             duration = 1000

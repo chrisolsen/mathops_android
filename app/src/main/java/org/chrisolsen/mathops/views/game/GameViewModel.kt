@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import org.chrisolsen.mathops.models.Game
 import org.chrisolsen.mathops.models.MathOpsDatabase
 import java.util.*
-import kotlin.math.roundToInt
 
 enum class Operation {
     addition,
@@ -83,7 +82,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             return questionIndex + 1
         }
 
-    var _currentQuestion: Question? = null
+    private var _currentQuestion: Question? = null
     var currentQuestion: Question
         get() {
             if (_currentQuestion == null || _currentQuestion!!.isAnswered()) {

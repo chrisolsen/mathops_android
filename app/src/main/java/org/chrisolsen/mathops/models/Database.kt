@@ -8,8 +8,11 @@ interface GameDao {
     @Insert
     suspend fun insert(game: Game): Long
 
-    @Query("Select * from games")
+    @Query("select * from games")
     suspend fun getAll(): List<Game>
+
+    @Query("select * from games where operation = :operation order by timestamp desc")
+    suspend fun getByOperation(operation: String): List<Game>
 }
 
 @Database(entities = [Game::class], version = 1)
