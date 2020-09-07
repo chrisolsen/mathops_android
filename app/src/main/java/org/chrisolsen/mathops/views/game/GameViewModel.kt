@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import org.chrisolsen.mathops.models.Game
 import org.chrisolsen.mathops.models.MathOpsDatabase
 import java.util.*
+import kotlin.math.roundToInt
 
 enum class Operation {
     addition,

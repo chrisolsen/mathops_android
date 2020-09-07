@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnticipateOvershootInterpolator
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +26,11 @@ class GameFragment : Fragment() {
     private lateinit var binding: GameFragmentBinding
     private var answerAnimation: AnimatorSet? = null
     private val scope = CoroutineScope(Dispatchers.Main)
+    private lateinit var gameScoreBanner: View
+    private lateinit var gameScoreBackground: View
+    private lateinit var playAgainButton: Button
+    private lateinit var score: TextView
+    private lateinit var scoreText: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,13 +44,19 @@ class GameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val args = GameFragmentArgs.fromBundle(requireArguments())
-        viewModel.init(args.question_count, args.operation)
+        viewModel.init(args.questionCount, args.operation)
 
-        binding.banner.playAgain.setOnClickListener { view: View ->
+        gameScoreBanner = view.findViewById(R.id.gameScoreBanner)
+        gameScoreBackground = view.findViewById(R.id.gameScoreBackground)
+        playAgainButton = view.findViewById(R.id.playAgain)
+        score = view.findViewById(R.id.score)
+        scoreText = view.findViewById(R.id.gameScoreText)
+
+        playAgainButton.setOnClickListener { view: View ->
             Log.d(TAG, "onViewCreated: PLAY AGAIN!!")
 //            binding.gameScoreBackground.isClickable = false
-            binding.gameScoreBackground.animate().alpha(0f)
-            binding.banner.gameScoreBanner.animate().run {
+            gameScoreBackground.animate().alpha(0f)
+            gameScoreBanner.animate().run {
                 y(Resources.getSystem().displayMetrics.heightPixels.toFloat())
                 interpolator = AnticipateOvershootInterpolator()
                 duration = 500
@@ -78,8 +91,8 @@ class GameFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     if (viewModel.currentQuestionNumber >= viewModel.questionCount) {
 //                        binding.gameScoreBackground.isClickable = true
-                        binding.banner.score.text = viewModel.percentCorrect.toString() + "%"
-                        binding.banner.gameScoreText.text = when (viewModel.percentCorrect) {
+                        score.text = viewModel.percentCorrect.toString() + "%"
+                        scoreText.text = when (viewModel.percentCorrect) {
                             in 0..50 -> "Keep Trying!"
                             in 51..60 -> "Getting Better!"
                             in 61..79 -> "Keep It Up!"
@@ -89,8 +102,8 @@ class GameFragment : Fragment() {
                         withContext(Dispatchers.IO) {
                             viewModel.saveGame()
                         }
-                        binding.banner.gameScoreBackground.animate().alpha(1f)
-                        binding.banner.gameScoreBanner.animate().run {
+                        gameScoreBackground.animate().alpha(1f)
+                        gameScoreBanner.animate().run {
                             y(200f)
                             interpolator = AnticipateOvershootInterpolator()
                             duration = 1000
