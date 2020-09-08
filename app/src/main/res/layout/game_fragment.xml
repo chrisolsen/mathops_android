@@ -131,26 +131,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
-        <FrameLayout
-            android:id="@+id/gameScoreBackground"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0"
-            android:elevation="10dp"
-            android:background="#44000000">
-
-            <include
-                android:id="@+id/banner"
-                layout="@layout/fragment_game_score_banner"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-        </FrameLayout>
+        <include layout="@layout/fragment_game_score" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </layout>
