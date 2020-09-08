@@ -10,7 +10,7 @@
         android:background="?colorAccent">
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/progress_bar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -26,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
+            android:id="@+id/card_view"
             app:cardBackgroundColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             app:cardCornerRadius="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progressBar">
+            app:layout_constraintTop_toBottomOf="@+id/progress_bar">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -129,9 +129,11 @@
             android:verticalSpacing="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView" />
+            app:layout_constraintTop_toBottomOf="@+id/card_view" />
 
-        <include layout="@layout/fragment_game_score" />
+        <include
+            android:id="@+id/banner"
+            layout="@layout/fragment_game_score" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

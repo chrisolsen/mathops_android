@@ -9,11 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnticipateOvershootInterpolator
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.android.synthetic.main.game_fragment.*
 import kotlinx.coroutines.*
 import org.chrisolsen.mathops.R
 import org.chrisolsen.mathops.databinding.GameFragmentBinding
@@ -25,11 +24,6 @@ class GameFragment : Fragment() {
     private lateinit var binding: GameFragmentBinding
     private var answerAnimation: AnimatorSet? = null
     private val scope = CoroutineScope(Dispatchers.Main)
-    private lateinit var gameScoreBannerForeground: View
-    private lateinit var gameScoreBackground: View
-    private lateinit var gameScorePlayAgainButton: Button
-    private lateinit var gameScoreScore: TextView
-    private lateinit var gameScoreText: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,20 +39,14 @@ class GameFragment : Fragment() {
         val args = GameFragmentArgs.fromBundle(requireArguments())
         viewModel.init(args.questionCount, args.operation)
 
-        // TODO: move this into a custom view
-        gameScoreBannerForeground = view.findViewById(R.id.gameScoreForeground)
-        gameScoreBackground = view.findViewById(R.id.gameScoreBackground)
-        gameScorePlayAgainButton = view.findViewById(R.id.gameScorePlayAgain)
-        gameScoreScore = view.findViewById(R.id.gameScoreScore)
-        gameScoreText = view.findViewById(R.id.gameScoreText)
-
         // initialization
-        gameScoreBackground.alpha = 0f
-        gameScoreBannerForeground.y = Resources.getSystem().displayMetrics.heightPixels.toFloat()
+        val banner = binding.banner
+        banner.gamescoreBackground.alpha = 0f
+        banner.gamescoreForeground.y = Resources.getSystem().displayMetrics.heightPixels.toFloat()
 
-        gameScorePlayAgainButton.setOnClickListener { view: View ->
-            gameScoreBackground.animate().alpha(0f)
-            gameScoreBannerForeground.animate().run {
+        banner.gamescorePlayAgain.setOnClickListener { view: View ->
+            banner.gamescoreBackground.animate().alpha(0f)
+            banner.gamescoreForeground.animate().run {
                 y(Resources.getSystem().displayMetrics.heightPixels.toFloat())
                 interpolator = AnticipateOvershootInterpolator()
                 duration = 500
@@ -82,18 +70,18 @@ class GameFragment : Fragment() {
         binding.answerOptions.adapter = adapter
         binding.answerOptions.setOnItemClickListener { _: ViewGroup, _: View, position: Int, _: Long ->
             if (viewModel.answerQuestion(question, answers.get(position))) {
-                animateAnswerStatus(binding.correct)
+                animateAnswerStatus(correct)
             } else {
-                animateAnswerStatus(binding.incorrect)
+                animateAnswerStatus(incorrect)
             }
 
             scope.launch {
                 delay(1000)
                 withContext(Dispatchers.Main) {
                     if (viewModel.currentQuestionNumber >= viewModel.questionCount) {
-//                        binding.gameScoreBackground.isClickable = true
-                        gameScoreScore.text = viewModel.percentCorrect.toString() + "%"
-                        gameScoreText.text = when (viewModel.percentCorrect) {
+                        val banner = binding.banner
+                        banner.gamescoreScore.text = viewModel.percentCorrect.toString() + "%"
+                        banner.gamescoreText.text = when (viewModel.percentCorrect) {
                             in 0..50 -> "Keep Trying!"
                             in 51..60 -> "Getting Better!"
                             in 61..79 -> "Keep It Up!"
@@ -103,8 +91,8 @@ class GameFragment : Fragment() {
                         withContext(Dispatchers.IO) {
                             viewModel.saveGame()
                         }
-                        gameScoreBackground.animate().alpha(1f)
-                        gameScoreBannerForeground.animate().run {
+                        banner.gamescoreBackground.animate().alpha(1f)
+                        banner.gamescoreForeground.animate().run {
                             y(200f)
                             interpolator = AnticipateOvershootInterpolator()
                             duration = 1000
