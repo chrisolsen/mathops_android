@@ -53,24 +53,27 @@ class IncorrectQuestion(val question: Question, val questionIndex: Int)
 class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = "GameViewModel"
 
-    lateinit var operation: Operation
-        private set
-    var questionCount = 0
-        private set
-    val correctCount: Int
-        get() {
-            return questionCount - incorrectQuestions.size
-        }
-    val durationSeconds: Long
-        get() {
-            return (Date().time - startTime) / 1000
-        }
-
     private var startTime = 0L
     private var questionIndex = -1
     private val showAgainOffset = 5
     private val incorrectQuestions = mutableListOf<IncorrectQuestion>()
     private val previousQuestions = mutableListOf<Question>()
+
+    lateinit var operation: Operation
+        private set
+
+    var questionCount = 0
+        private set
+
+    val correctCount: Int
+        get() {
+            return questionCount - incorrectQuestions.size
+        }
+
+    val durationMilliSeconds: Long
+        get() {
+            return Date().time - startTime
+        }
 
     fun init(questionCount: Int, operation: Operation) {
         this.questionCount = questionCount
@@ -133,7 +136,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     suspend fun saveGame() {
         val game = Game(
             operation = operation.toString(),
-            duration = durationSeconds,
+            duration = durationMilliSeconds,
             correctCount = correctCount,
             questionCount = questionCount,
             timestamp = Date().time

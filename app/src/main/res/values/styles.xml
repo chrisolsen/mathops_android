@@ -36,6 +36,18 @@
         <item name="android:textColor">@color/blueGray</item>
     </style>
 
+    <style name="AppTheme.Light.Text.Large" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@color/blueGray</item>
+    </style>
+
+    <style name="AppTheme.Light.Text.Medium" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/blueGray</item>
+    </style>
+
+    <style name="AppTheme.Light.Text.Small" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
     <style name="AppTheme.Text.Small" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@color/blueGray</item>
     </style>
@@ -44,6 +56,7 @@
         <item name="android:textColor">@color/gray</item>
     </style>
 
+    <!--    TODO: rename this -->
     <style name="AppTheme.Text.Question" parent="TextAppearance.AppCompat.Display2">
         <item name="android:textColor">@color/blueGray</item>
     </style>

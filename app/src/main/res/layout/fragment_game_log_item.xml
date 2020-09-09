@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="game"
             type="org.chrisolsen.mathops.models.Game" />
@@ -12,18 +11,62 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:theme="@style/AppTheme.Light">
 
         <TextView
+            android:id="@+id/log_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Foo"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/AppTheme.Light.Text.Small"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:text="@{ game.happenedOn }"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="56" />
+            tools:text="March 6, 2020" />
+
+        <TextView
+            android:id="@+id/log_time_per_question"
+            style="@style/AppTheme.Text.Question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@{ game.timePerQuestion }"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/log_date"
+            app:layout_constraintTop_toBottomOf="@+id/log_date"
+            tools:text="4.9" />
+
+        <TextView
+            android:id="@+id/log_rate_label"
+            style="@style/AppTheme.Light.Text.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sec/q"
+            app:layout_constraintBaseline_toBaselineOf="@+id/log_time_per_question"
+            app:layout_constraintStart_toEndOf="@+id/log_time_per_question" />
+
+        <TextView
+            android:id="@+id/log_percent"
+            style="@style/AppTheme.Text.Question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{ game.score }"
+            app:layout_constraintBaseline_toBaselineOf="@+id/log_time_per_question"
+            app:layout_constraintEnd_toStartOf="@+id/percentSign"
+            tools:text="94" />
+
+        <TextView
+            android:id="@+id/percentSign"
+            style="@style/AppTheme.Light.Text.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:text="%"
+            app:layout_constraintBaseline_toBaselineOf="@+id/log_percent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

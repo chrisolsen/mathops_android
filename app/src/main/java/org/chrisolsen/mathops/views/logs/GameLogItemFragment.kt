@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import org.chrisolsen.mathops.R
 import org.chrisolsen.mathops.models.Game
 
-class GameLogItemFragment(private val game: Game) : Fragment() {
+class GameLogItemFragment private constructor(private val game: Game) : Fragment() {
 
     private val TAG = "GameLogItemFragment"
 
