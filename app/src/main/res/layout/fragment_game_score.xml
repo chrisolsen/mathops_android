@@ -7,7 +7,7 @@
         android:id="@+id/gamescore_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#44000000"
+        android:background="@drawable/dark_background"
         android:elevation="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
