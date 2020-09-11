@@ -2,22 +2,12 @@
 
     <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorAccent</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:colorBackground">@color/colorAccent</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="fontFamily">@font/rubik</item>
-
         <item name="materialButtonStyle">@style/AppTheme.Button</item>
-        <!--        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>-->
-        <!--        <item name="colorSecondaryVariant">@color/colorSecondaryDark</item>-->
-        <!--        <item name="colorSurface">@color/colorPrimary</item>-->
-        <!--        <item name="colorOnPrimary">@android:color/white</item>-->
-        <!--        <item name="colorOnSecondary">@color/my_app_color_on_secondary</item>-->
-        <!--        <item name="colorOnBackground">@color/colorPrimary</item>-->
-        <!--        <item name="colorOnError">@color/my_app_color_on_error</item>-->
-        <!--        <item name="colorOnSurface">@android:color/white</item>-->
-        <!--        <item name="scrimBackground">@color/mtrl_scrim_color</item>-->
     </style>
 
     <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -106,8 +96,8 @@
         <item name="cardBackgroundColor">@android:color/white</item>
         <item name="cardCornerRadius">20dp</item>
         <item name="contentPaddingBottom">30dp</item>
-        <item name="contentPaddingLeft">20dp</item>
-        <item name="contentPaddingRight">20dp</item>
+        <item name="contentPaddingLeft">10dp</item>
+        <item name="contentPaddingRight">10dp</item>
         <item name="contentPaddingTop">30dp</item>
     </style>
 

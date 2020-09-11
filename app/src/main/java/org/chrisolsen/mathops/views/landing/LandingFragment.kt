@@ -23,8 +23,11 @@ class LandingFragment : Fragment() {
 
         binding.getStarted.setOnClickListener { view: View ->
             view.findNavController()
-                .navigate(LandingFragmentDirections.actionLandingFragmentToGameOptionsFragment())
+                .navigate(
+                    LandingFragmentDirections.actionLandingFragmentToGameOptionsFragment(),
+                )
         }
+        activity?.title = ""
         return binding.root
     }
 }

@@ -36,11 +36,12 @@
     <fragment
         android:id="@+id/landingFragment"
         android:name="org.chrisolsen.mathops.views.landing.LandingFragment"
-        android:label="MathOps"
         tools:layout="@layout/landing_fragment">
         <action
             android:id="@+id/action_landingFragment_to_gameOptionsFragment"
-            app:destination="@id/gameOptionsFragment" />
+            app:destination="@id/gameOptionsFragment"
+            app:popUpTo="@id/landingFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/gameLogsFragment"
