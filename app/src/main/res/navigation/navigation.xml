@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/landingFragment">
+    app:startDestination="@id/gameOptionsFragment">
 
     <fragment
         android:id="@+id/gameOptionsFragment"
         android:name="org.chrisolsen.mathops.views.gameoptions.GameOptionsFragment"
-        android:label="Game Options"
+        android:label="New Game"
         tools:layout="@layout/game_options_fragment">
         <action
             android:id="@+id/action_gameOptionsFragment_to_gameFragment"
@@ -34,18 +34,8 @@
             app:destination="@id/gameOptionsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/landingFragment"
-        android:name="org.chrisolsen.mathops.views.landing.LandingFragment"
-        tools:layout="@layout/landing_fragment">
-        <action
-            android:id="@+id/action_landingFragment_to_gameOptionsFragment"
-            app:destination="@id/gameOptionsFragment"
-            app:popUpTo="@id/landingFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
-    <fragment
         android:id="@+id/gameLogsFragment"
         android:name="org.chrisolsen.mathops.views.logs.GameLogFragment"
         android:label="Logs"
-        tools:layout="@layout/fragment_game_logs" />
+        tools:layout="@layout/game_log_fragment" />
 </navigation>
