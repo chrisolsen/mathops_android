@@ -103,7 +103,7 @@
                         android:layout_marginRight="15dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:text="25" />
+                        android:text="25" />
 
                     <SeekBar
                         android:id="@+id/question_count_seekbar"

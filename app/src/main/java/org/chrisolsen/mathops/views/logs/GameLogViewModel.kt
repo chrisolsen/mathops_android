@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.chrisolsen.mathops.models.Game
 import org.chrisolsen.mathops.models.MathOpsDatabase
-import org.chrisolsen.mathops.views.game.Operation
 
 class GameLogViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -19,14 +18,11 @@ class GameLogViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun fetchByOperation(operation: Operation): MutableLiveData<List<Game>> {
+    fun fetchByOperation(operation: String): MutableLiveData<List<Game>> {
         viewModelScope.launch {
-            logs.value = MathOpsDatabase(getApplication()).gameDao().getByOperation(operation.name)
+            logs.value = MathOpsDatabase(getApplication()).gameDao().getByOperation(operation)
         }
         return logs
     }
 
-    override fun onCleared() {
-        super.onCleared()
-    }
 }

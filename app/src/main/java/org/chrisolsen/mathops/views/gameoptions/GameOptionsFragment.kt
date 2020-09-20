@@ -6,16 +6,14 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import org.chrisolsen.mathops.R
 import org.chrisolsen.mathops.databinding.GameOptionsFragmentBinding
-import org.chrisolsen.mathops.views.game.Operation
 
 class GameOptionsFragment : Fragment() {
 
-    private lateinit var viewModel: GameOptionsViewModel
+    private var questionCount = 25
+    private var operation = "+"
     private lateinit var binding: GameOptionsFragmentBinding
 
     override fun onCreateView(
@@ -32,35 +30,21 @@ class GameOptionsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.startGame.setOnClickListener { view: View -> startGame(view) }
-
-        binding.addition.setOnClickListener { _ ->
-            viewModel.operation.value = Operation.addition
-        }
-        binding.subtraction.setOnClickListener { _ ->
-            viewModel.operation.value = Operation.subtraction
-        }
-        binding.multiplication.setOnClickListener { _ ->
-            viewModel.operation.value = Operation.multiplication
-        }
-        binding.division.setOnClickListener { _ ->
-            viewModel.operation.value = Operation.division
-        }
+        binding.startGame.setOnClickListener { v: View -> startGame(v) }
+        binding.addition.setOnClickListener { operation = "+" }
+        binding.subtraction.setOnClickListener { operation = "-" }
+        binding.multiplication.setOnClickListener { operation = "x" }
+        binding.division.setOnClickListener { operation = "/" }
 
         binding.questionCountSeekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 val p = (progress.toFloat() / 100 * 50).toInt()
-                viewModel.questionCount.value = if (p == 0) 1 else p
+                questionCount = if (p == 0) 1 else p
+                binding.questionCountValue.text = questionCount.toString()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-
-        viewModel = ViewModelProvider(this).get(GameOptionsViewModel::class.java)
-        viewModel.questionCount.observe(viewLifecycleOwner, Observer { count ->
-            val c = if (count == 0) 1 else count
-            binding.questionCountValue.text = c.toString()
         })
     }
 
@@ -68,10 +52,8 @@ class GameOptionsFragment : Fragment() {
         view
             .findNavController()
             .navigate(
-                GameOptionsFragmentDirections.actionGameOptionsFragmentToGameFragment(
-                    viewModel.questionCount.value!!,
-                    viewModel.operation.value!!
-                )
+                GameOptionsFragmentDirections
+                    .actionGameOptionsFragmentToGameFragment(questionCount, operation)
             )
     }
 

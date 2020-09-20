@@ -133,7 +133,8 @@
 
         <include
             android:id="@+id/banner"
-            layout="@layout/fragment_game_score" />
+            layout="@layout/fragment_game_score"
+            tools:visibility="invisible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

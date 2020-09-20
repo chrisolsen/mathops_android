@@ -12,10 +12,12 @@ import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import kotlinx.android.synthetic.main.game_fragment.*
 import kotlinx.coroutines.*
 import org.chrisolsen.mathops.R
 import org.chrisolsen.mathops.databinding.GameFragmentBinding
+import org.chrisolsen.mathops.models.Question
 
 class GameFragment : Fragment() {
     private val TAG = "GameFragment"
@@ -23,7 +25,6 @@ class GameFragment : Fragment() {
     private lateinit var viewModel: GameViewModel
     private lateinit var binding: GameFragmentBinding
     private var answerAnimation: AnimatorSet? = null
-    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +38,6 @@ class GameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val args = GameFragmentArgs.fromBundle(requireArguments())
-        viewModel.init(args.questionCount, args.operation)
 
         // initialization
         val banner = binding.banner
@@ -52,54 +52,61 @@ class GameFragment : Fragment() {
                 duration = 500
             }
             ObjectAnimator.ofInt(binding.progressBar, "progress", 0).start()
-            viewModel.reset()
-            askQuestion(args)
+            startGame(args.questionCount, args.operation)
         }
 
-        askQuestion(args)
+        startGame(args.questionCount, args.operation)
     }
 
-    private fun askQuestion(args: GameFragmentArgs) {
-        val question: Question = viewModel.currentQuestion
+    private fun startGame(questionCount: Int, operation: String) {
+        GlobalScope.launch {
+            viewModel.startQuiz(questionCount, operation)
+            withContext(Dispatchers.Main) {
+                askQuestion(questionCount, operation)
+            }
+        }
+    }
+
+    private suspend fun askQuestion(questionCount: Int, operation: String) {
+        val question: Question = viewModel.getNextQuestion()
         binding.questionNumber1.text = question.value1.toString()
         binding.questionNumber2.text = question.value2.toString()
-        binding.questionOperation.text = question.symbol
+        binding.questionOperation.text = question.operation
 
         val answers = viewModel.generateAnswerOptions(question)
         val adapter = context?.let { ArrayAdapter(it, R.layout.question_option, answers) }
         binding.answerOptions.adapter = adapter
         binding.answerOptions.setOnItemClickListener { _: ViewGroup, _: View, position: Int, _: Long ->
-            if (viewModel.answerQuestion(question, answers.get(position))) {
-                animateAnswerStatus(correct)
-            } else {
-                animateAnswerStatus(incorrect)
-            }
+            viewModel.viewModelScope.launch {
+                if (viewModel.answerQuestion(question, answers[position])) {
+                    animateAnswerStatus(correct)
+                } else {
+                    animateAnswerStatus(incorrect)
+                }
 
-            scope.launch {
                 delay(1000)
-                withContext(Dispatchers.Main) {
-                    if (viewModel.currentQuestionNumber >= viewModel.questionCount) {
-                        val banner = binding.banner
-                        banner.gamescoreScore.text = viewModel.percentCorrect.toString() + "%"
-                        banner.gamescoreText.text = when (viewModel.percentCorrect) {
-                            in 0..50 -> "Keep Trying!"
-                            in 51..60 -> "Getting Better!"
-                            in 61..79 -> "Keep It Up!"
-                            in 80..89 -> "Good Job!"
-                            else -> "Great Work!!"
-                        }
-                        withContext(Dispatchers.IO) {
-                            viewModel.saveGame()
-                        }
-                        banner.gamescoreBackground.animate().alpha(1f)
-                        banner.gamescoreForeground.animate().run {
-                            y(200f)
-                            interpolator = AnticipateOvershootInterpolator()
-                            duration = 1000
-                        }
-                    } else {
-                        askQuestion(args)
+                if (viewModel.isLastQuestion()) {
+                    withContext(Dispatchers.IO) {
+                        viewModel.finishQuiz()
                     }
+
+                    val banner = binding.banner
+                    banner.gamescoreScore.text = viewModel.percentCorrect.toString() + "%"
+                    banner.gamescoreText.text = when (viewModel.percentCorrect) {
+                        in 0..50 -> "Keep Trying!"
+                        in 51..60 -> "Getting Better!"
+                        in 61..79 -> "Keep It Up!"
+                        in 80..89 -> "Good Job!"
+                        else -> "Great Work!!"
+                    }
+                    banner.gamescoreBackground.animate().alpha(1f)
+                    banner.gamescoreForeground.animate().run {
+                        y(200f)
+                        interpolator = AnticipateOvershootInterpolator()
+                        duration = 1000
+                    }
+                } else {
+                    askQuestion(questionCount, operation)
                 }
             }
         }
@@ -112,6 +119,8 @@ class GameFragment : Fragment() {
         val scaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, 5.0f).apply { duration = 1000 }
         val resetScaleX = ObjectAnimator.ofFloat(view, View.SCALE_X, 1.0f).apply { duration = 0 }
         val resetScaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, 1.0f).apply { duration = 0 }
+
+        // end it if it's already running
         answerAnimation?.run {
             end()
         }
@@ -122,9 +131,7 @@ class GameFragment : Fragment() {
             start()
         }
 
-        var progress = binding.progressBar.progress + (100 / viewModel.questionCount)
-        val isLastQuestion = viewModel.questionCount == viewModel.currentQuestionNumber
-        progress = if (isLastQuestion) 100 else progress
-        ObjectAnimator.ofInt(binding.progressBar, "progress", progress).start()
+        // progress bar animation
+        ObjectAnimator.ofInt(binding.progressBar, "progress", viewModel.percentComplete).start()
     }
 }

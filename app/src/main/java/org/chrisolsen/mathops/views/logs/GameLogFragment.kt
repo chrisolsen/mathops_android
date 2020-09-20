@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import kotlinx.android.synthetic.main.game_log_fragment.*
 import org.chrisolsen.mathops.R
-import org.chrisolsen.mathops.views.game.Operation
 
 class GameLogFragment : Fragment() {
 
@@ -32,10 +31,10 @@ class GameLogFragment : Fragment() {
             Log.d(TAG, "onViewCreated: creating fragments")
             val pagerAdapter = ViewPagerAdapter(it.supportFragmentManager, 0)
             pagerAdapter.fragments = listOf(
-                GameLogListFragment.newInstance(Operation.addition),
-                GameLogListFragment.newInstance(Operation.subtraction),
-                GameLogListFragment.newInstance(Operation.multiplication),
-                GameLogListFragment.newInstance(Operation.division)
+                GameLogListFragment.newInstance("Add", "+"),
+                GameLogListFragment.newInstance("Subtract", "-"),
+                GameLogListFragment.newInstance("Multiply", "x"),
+                GameLogListFragment.newInstance("Divide", "/")
             )
             viewPager.adapter = pagerAdapter
             viewPager.currentItem = 0

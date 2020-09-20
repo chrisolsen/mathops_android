@@ -15,16 +15,14 @@ import kotlinx.android.synthetic.main.fragment_game_log_list.*
 import org.chrisolsen.mathops.R
 import org.chrisolsen.mathops.databinding.FragmentGameLogItemBinding
 import org.chrisolsen.mathops.models.Game
-import org.chrisolsen.mathops.views.game.Operation
 
 class GameLogListFragment private constructor() : Fragment() {
 
     private val TAG = "GameLogListFragment"
-    private lateinit var operation: Operation
     private lateinit var vm: GameLogViewModel
-
-    val title: String
-        get() = operation.name
+    private lateinit var operation: String
+    lateinit var title: String
+        private set
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,9 +58,10 @@ class GameLogListFragment private constructor() : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(op: Operation) =
+        fun newInstance(title: String, op: String) =
             GameLogListFragment().apply {
-                operation = op
+                this.title = title
+                this.operation = op
             }
     }
 

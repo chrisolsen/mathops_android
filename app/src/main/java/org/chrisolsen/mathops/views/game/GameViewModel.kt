@@ -2,114 +2,124 @@ package org.chrisolsen.mathops.views.game
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import org.chrisolsen.mathops.models.Game
-import org.chrisolsen.mathops.models.MathOpsDatabase
+import org.chrisolsen.mathops.models.*
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.math.roundToInt
-
-enum class Operation {
-    addition,
-    subtraction,
-    multiplication,
-    division,
-}
-
-class Question(val value1: Int, val value2: Int, val operation: Operation) {
-
-    private var usersResponse: Int? = null
-
-    val answer: Int
-        get() {
-            return when (operation) {
-                Operation.addition -> value1 + value2
-                Operation.division -> value1 / value2
-                Operation.multiplication -> value1 * value2
-                Operation.subtraction -> value1 - value2
-            }
-        }
-
-    val symbol: String
-        get() {
-            return when (operation) {
-                Operation.addition -> "+"
-                Operation.division -> "/"
-                Operation.multiplication -> "x"
-                Operation.subtraction -> "-"
-            }
-        }
-
-    fun isCorrect(value: Int): Boolean {
-        usersResponse = value
-        return value == answer
-    }
-
-    fun isAnswered(): Boolean {
-        return usersResponse != null
-    }
-}
-
-class IncorrectQuestion(val question: Question, val questionIndex: Int)
+import kotlin.random.Random
 
 class GameViewModel(application: Application) : AndroidViewModel(application) {
-    private val TAG = "GameViewModel"
-
-    private var startTime = 0L
-    private var questionIndex = -1
-    private val showAgainOffset = 5
-    private val incorrectQuestions = mutableListOf<IncorrectQuestion>()
-    private val previousQuestions = mutableListOf<Question>()
-
-    lateinit var operation: Operation
-        private set
-
-    var questionCount = 0
-        private set
-
-    val correctCount: Int
-        get() {
-            return questionCount - incorrectQuestions.size
-        }
-
-    val durationMilliSeconds: Long
-        get() {
-            return Date().time - startTime
-        }
-
-    fun init(questionCount: Int, operation: Operation) {
-        this.questionCount = questionCount
-        this.operation = operation
-        this.startTime = Date().time
+    companion object {
+        private val TAG = "GameViewModel"
     }
 
-    val currentQuestionNumber: Int
-        get() {
-            return questionIndex + 1
-        }
+    private lateinit var game: Game
+    private lateinit var questions: MutableList<Question>
 
-    private var _currentQuestion: Question? = null
-    var currentQuestion: Question
-        get() {
-            if (_currentQuestion == null || _currentQuestion!!.isAnswered()) {
-                return generateQuestion()
-            }
-            return _currentQuestion!!
-        }
-        private set(question) {
-            _currentQuestion = question
-        }
+    private lateinit var gameDao: GameDao
+    private lateinit var questionDao: QuestionDao
+
+    private var questionStartTime: Long = -1
+    private var questionIndex = 0
 
     val percentCorrect: Int
         get() {
-            return ((questionCount - incorrectQuestions.size).toFloat() * 100 / questionCount).roundToInt()
+            return (game.correctCount.toFloat() * 100 / game.questionCount).roundToInt()
         }
 
-    fun reset() {
-        questionIndex = -1
-        incorrectQuestions.clear()
-        previousQuestions.clear()
-        startTime = Date().time
+    val percentComplete: Int
+        get() {
+            return if (isLastQuestion()) 100 else (100f * questionIndex / questions.size).toInt()
+        }
+
+    fun isLastQuestion(): Boolean {
+        return questionIndex >= questions.size
     }
 
+    fun getNextQuestion(): Question {
+        return questions[questionIndex++]
+    }
+
+    suspend fun startQuiz(questionCount: Int, operation: String) {
+        questionIndex = 0
+        questionStartTime = Date().time
+
+        gameDao = MathOpsDatabase(getApplication()).gameDao()
+        questionDao = MathOpsDatabase(getApplication()).questionDao()
+
+        game = Game(questionCount = questionCount, operation = operation, timestamp = Date().time)
+        game.uuid = gameDao.insert(game)
+
+        // get weights from previous quizzes...for now everything is 1
+        val quizWeights = HashMap<Question, Int>()
+        for (i in 2..9) {
+            for (j in 2..9) {
+                val question = when (operation) {
+                    "+", "x" -> Question(
+                        quizId = game.uuid,
+                        value1 = i,
+                        value2 = j,
+                        operation = operation
+                    )
+                    "/" -> Question(
+                        quizId = game.uuid,
+                        value1 = i * j,
+                        value2 = i,
+                        operation = operation
+                    )
+                    "-" -> Question(
+                        quizId = game.uuid,
+                        value1 = i + j,
+                        value2 = i,
+                        operation = operation
+                    )
+                    else -> throw Exception("Invalid operation")
+                }
+                question.calculate()
+                quizWeights.set(question, 1)
+            }
+        }
+
+        // generate question weighted list for this quiz
+        val questionPool = mutableListOf<Question>()
+        quizWeights.keys.forEach { question ->
+            quizWeights.get(question)?.let { weight ->
+                for (i in 0..weight) {
+                    questionPool.add(question)
+                }
+            }
+        }
+
+        // pluck out questions from weighted list
+        questions = mutableListOf<Question>()
+        for (i in 1..game.questionCount) {
+            val index = Random.nextInt(questionPool.size - 1)
+            questionPool[index].let { question ->
+                questions.add(question)
+                questionPool.removeAt(index)
+            }
+        }
+        val ids = questionDao.insertAll(*questions.toTypedArray())
+        ids.forEachIndexed { index, id ->
+            questions[index].uuid = id
+        }
+    }
+
+    // Update database question with the answered value
+    suspend fun answerQuestion(question: Question, answer: Int): Boolean {
+        val isCorrect = question.answer == answer
+        question.correct = isCorrect
+        question.response = answer
+        question.time = (Date().time - questionStartTime).toInt()
+        questionDao.update(question)
+
+        // reset time
+        questionStartTime = Date().time
+
+        return isCorrect
+    }
+
+    // Generates a list of possible answers for the question
     fun generateAnswerOptions(question: Question): List<Int> {
         val list = IntArray(4)
         val minValue = question.answer - 10
@@ -133,70 +143,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         return list.asList()
     }
 
-    suspend fun saveGame() {
-        val game = Game(
-            operation = operation.toString(),
-            duration = durationMilliSeconds,
-            correctCount = correctCount,
-            questionCount = questionCount,
-            timestamp = Date().time
-        )
-        MathOpsDatabase(getApplication()).gameDao().insert(game)
-    }
-
-    private fun generateQuestion(): Question {
-        questionIndex++
-        // re-ask previously incorrect question
-        if (incorrectQuestions.isNotEmpty()) {
-            val useIncorrectQuestion =
-                incorrectQuestions.first().questionIndex + showAgainOffset <= questionIndex
-            if (useIncorrectQuestion) {
-                val incorrectQuestion = incorrectQuestions.removeAt(0)
-                return incorrectQuestion.question
-            }
-        }
-
-        // generate new question
-        var attemptCount = 0
-        existing@ while (true) {
-            val num1 = (2..9).random()
-            val num2 = (2..9).random()
-            val newQuestion = when (operation) {
-                Operation.multiplication, Operation.addition -> {
-                    Question(num1, num2, operation)
-                }
-                Operation.subtraction -> {
-                    Question(num1 + num2, num2, operation)
-                }
-                Operation.division -> {
-                    Question(num1 * num2, num2, operation)
-                }
-            }
-
-            attemptCount++
-            for (q in previousQuestions) {
-                if (q != newQuestion) {
-                    currentQuestion = newQuestion
-                    break@existing
-                }
-            }
-
-            if (attemptCount > 99) {
-                currentQuestion = newQuestion
-                break@existing
-            }
-        }
-
-        previousQuestions.add(currentQuestion!!)
-
-        return currentQuestion!!
-    }
-
-    fun answerQuestion(question: Question, answer: Int): Boolean {
-        if (!question.isCorrect(answer)) {
-            incorrectQuestions.add(IncorrectQuestion(question, questionIndex))
-            return false
-        }
-        return true
+    suspend fun finishQuiz() {
+        game.duration = Date().time - game.timestamp
+        game.correctCount =
+            questions.map { q -> if (q.correct) 1 else 0 }.reduce { acc, num -> acc + num }
+        game.completed = true
+        gameDao.update(game)
     }
 }

@@ -24,11 +24,11 @@
         android:label="MathOps"
         tools:layout="@layout/game_fragment">
         <argument
-            android:name="question_count"
+            android:name="questionCount"
             app:argType="integer" />
         <argument
             android:name="operation"
-            app:argType="org.chrisolsen.mathops.views.game.Operation" />
+            app:argType="string" />
         <action
             android:id="@+id/action_gameFragment_to_gameOptionsFragment"
             app:destination="@id/gameOptionsFragment" />
