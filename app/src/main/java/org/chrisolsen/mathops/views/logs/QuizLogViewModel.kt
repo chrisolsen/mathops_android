@@ -5,22 +5,22 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import org.chrisolsen.mathops.models.Game
 import org.chrisolsen.mathops.models.MathOpsDatabase
+import org.chrisolsen.mathops.models.Quiz
 
-class GameLogViewModel(application: Application) : AndroidViewModel(application) {
+class QuizLogViewModel(application: Application) : AndroidViewModel(application) {
 
-    val logs = MutableLiveData<List<Game>>()
+    val logs = MutableLiveData<List<Quiz>>()
 
     fun fetchAll() {
         viewModelScope.launch {
-            logs.value = MathOpsDatabase(getApplication()).gameDao().getAll()
+            logs.value = MathOpsDatabase(getApplication()).quizDao().getAll()
         }
     }
 
-    fun fetchByOperation(operation: String): MutableLiveData<List<Game>> {
+    fun fetchByOperation(operation: String): MutableLiveData<List<Quiz>> {
         viewModelScope.launch {
-            logs.value = MathOpsDatabase(getApplication()).gameDao().getByOperation(operation)
+            logs.value = MathOpsDatabase(getApplication()).quizDao().getByOperation(operation)
         }
         return logs
     }

@@ -4,21 +4,21 @@ import android.content.Context
 import androidx.room.*
 
 @Dao
-interface GameDao {
+interface QuizDao {
     @Insert
-    suspend fun insert(game: Game): Long
+    suspend fun insert(quiz: Quiz): Long
 
-    @Query("select * from games")
-    suspend fun getAll(): List<Game>
+    @Query("select * from quizzes")
+    suspend fun getAll(): List<Quiz>
 
-    @Query("select * from games where uuid = :gameId")
-    suspend fun get(gameId: Int): List<QuizWithQuestions>
+    @Query("select * from quizzes where uuid = :quizId")
+    suspend fun get(quizId: Int): List<QuizWithQuestions>
 
-    @Query("select * from games where operation = :operation and completed = 1 order by timestamp desc")
-    suspend fun getByOperation(operation: String): List<Game>
+    @Query("select * from quizzes where operation = :operation and completed = 1 order by timestamp desc")
+    suspend fun getByOperation(operation: String): List<Quiz>
 
     @Update
-    suspend fun update(game: Game)
+    suspend fun update(quiz: Quiz)
 }
 
 @Dao
@@ -35,15 +35,15 @@ interface QuestionDao {
 
 data class QuizWithQuestions(
     @Embedded
-    val quiz: Game,
+    val quiz: Quiz,
 
     @Relation(parentColumn = "uuid", entityColumn = "quiz_id")
     val questions: List<Question>
 )
 
-@Database(entities = [Game::class, Question::class], version = 1)
+@Database(entities = [Quiz::class, Question::class], version = 1)
 abstract class MathOpsDatabase : RoomDatabase() {
-    abstract fun gameDao(): GameDao
+    abstract fun quizDao(): QuizDao
     abstract fun questionDao(): QuestionDao
 
     companion object {

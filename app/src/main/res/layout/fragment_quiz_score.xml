@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <FrameLayout
-        android:id="@+id/gamescore_background"
+        android:id="@+id/quizscore_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/dark_background"
         android:elevation="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/gamescore_foreground"
+            android:id="@+id/quizscore_foreground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +37,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/gamescore_text"
+                    android:id="@+id/quizscore_text"
                     style="@style/AppTheme.Text.Large"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                     android:text="You Scored" />
 
                 <TextView
-                    android:id="@+id/gamescore_score"
+                    android:id="@+id/quizscore_score"
                     style="@style/AppTheme.Text.Display2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
                     tools:text="88%" />
 
                 <Button
-                    android:id="@+id/gamescore_play_again"
+                    android:id="@+id/quizscore_play_again"
                     style="@style/AppTheme.Button.Primary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

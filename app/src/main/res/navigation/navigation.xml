@@ -3,26 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/gameOptionsFragment">
+    app:startDestination="@id/quizOptionsFragment">
 
     <fragment
-        android:id="@+id/gameOptionsFragment"
-        android:name="org.chrisolsen.mathops.views.gameoptions.GameOptionsFragment"
-        android:label="New Game"
-        tools:layout="@layout/game_options_fragment">
+        android:id="@+id/quizOptionsFragment"
+        android:name="org.chrisolsen.mathops.views.quizoptions.QuizOptionsFragment"
+        android:label="New Quiz"
+        tools:layout="@layout/fragment_quiz_options">
         <action
-            android:id="@+id/action_gameOptionsFragment_to_gameFragment"
-            app:destination="@id/gameFragment"
+            android:id="@+id/action_quizOptionsFragment_to_quizFragment"
+            app:destination="@id/quizFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
-        android:id="@+id/gameFragment"
-        android:name="org.chrisolsen.mathops.views.game.GameFragment"
+        android:id="@+id/quizFragment"
+        android:name="org.chrisolsen.mathops.views.quiz.QuizFragment"
         android:label="MathOps"
-        tools:layout="@layout/game_fragment">
+        tools:layout="@layout/fragment_quiz">
         <argument
             android:name="questionCount"
             app:argType="integer" />
@@ -30,12 +30,12 @@
             android:name="operation"
             app:argType="string" />
         <action
-            android:id="@+id/action_gameFragment_to_gameOptionsFragment"
-            app:destination="@id/gameOptionsFragment" />
+            android:id="@+id/action_quizFragment_to_quizOptionsFragment"
+            app:destination="@id/quizOptionsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/gameLogsFragment"
-        android:name="org.chrisolsen.mathops.views.logs.GameLogFragment"
+        android:id="@+id/quizLogsFragment"
+        android:name="org.chrisolsen.mathops.views.logs.QuizLogFragment"
         android:label="Logs"
-        tools:layout="@layout/game_log_fragment" />
+        tools:layout="@layout/fragment_quiz_log" />
 </navigation>

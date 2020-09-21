@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme.Light"
-    tools:context=".views.logs.GameLogListFragment">
+    tools:context=".views.logs.QuizLogListFragment">
 
     <TextView
         android:id="@android:id/empty"
@@ -14,7 +14,7 @@
         android:text="No logs for this operation" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/gameLogList"
+        android:id="@+id/quizLogList"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".views.game.GameFragment">
+    tools:context=".views.quiz.QuizFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -133,7 +133,7 @@
 
         <include
             android:id="@+id/banner"
-            layout="@layout/fragment_game_score"
+            layout="@layout/fragment_quiz_score"
             tools:visibility="invisible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

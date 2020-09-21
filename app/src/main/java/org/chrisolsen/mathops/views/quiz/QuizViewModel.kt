@@ -1,4 +1,4 @@
-package org.chrisolsen.mathops.views.game
+package org.chrisolsen.mathops.views.quiz
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -8,15 +8,15 @@ import kotlin.collections.HashMap
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-class GameViewModel(application: Application) : AndroidViewModel(application) {
+class QuizViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
-        private val TAG = "GameViewModel"
+        private val TAG = "QuizViewModel"
     }
 
-    private lateinit var game: Game
+    private lateinit var quiz: Quiz
     private lateinit var questions: MutableList<Question>
 
-    private lateinit var gameDao: GameDao
+    private lateinit var quizDao: QuizDao
     private lateinit var questionDao: QuestionDao
 
     private var questionStartTime: Long = -1
@@ -24,7 +24,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     val percentCorrect: Int
         get() {
-            return (game.correctCount.toFloat() * 100 / game.questionCount).roundToInt()
+            return (quiz.correctCount.toFloat() * 100 / quiz.questionCount).roundToInt()
         }
 
     val percentComplete: Int
@@ -44,11 +44,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         questionIndex = 0
         questionStartTime = Date().time
 
-        gameDao = MathOpsDatabase(getApplication()).gameDao()
+        quizDao = MathOpsDatabase(getApplication()).quizDao()
         questionDao = MathOpsDatabase(getApplication()).questionDao()
 
-        game = Game(questionCount = questionCount, operation = operation, timestamp = Date().time)
-        game.uuid = gameDao.insert(game)
+        quiz = Quiz(questionCount = questionCount, operation = operation, timestamp = Date().time)
+        quiz.uuid = quizDao.insert(quiz)
 
         // get weights from previous quizzes...for now everything is 1
         val quizWeights = HashMap<Question, Int>()
@@ -56,19 +56,19 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             for (j in 2..9) {
                 val question = when (operation) {
                     "+", "x" -> Question(
-                        quizId = game.uuid,
+                        quizId = quiz.uuid,
                         value1 = i,
                         value2 = j,
                         operation = operation
                     )
                     "/" -> Question(
-                        quizId = game.uuid,
+                        quizId = quiz.uuid,
                         value1 = i * j,
                         value2 = i,
                         operation = operation
                     )
                     "-" -> Question(
-                        quizId = game.uuid,
+                        quizId = quiz.uuid,
                         value1 = i + j,
                         value2 = i,
                         operation = operation
@@ -92,7 +92,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
         // pluck out questions from weighted list
         questions = mutableListOf<Question>()
-        for (i in 1..game.questionCount) {
+        for (i in 1..quiz.questionCount) {
             val index = Random.nextInt(questionPool.size - 1)
             questionPool[index].let { question ->
                 questions.add(question)
@@ -144,10 +144,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     suspend fun finishQuiz() {
-        game.duration = Date().time - game.timestamp
-        game.correctCount =
+        quiz.duration = Date().time - quiz.timestamp
+        quiz.correctCount =
             questions.map { q -> if (q.correct) 1 else 0 }.reduce { acc, num -> acc + num }
-        game.completed = true
-        gameDao.update(game)
+        quiz.completed = true
+        quizDao.update(quiz)
     }
 }

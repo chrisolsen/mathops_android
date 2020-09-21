@@ -1,4 +1,4 @@
-package org.chrisolsen.mathops.views.gameoptions
+package org.chrisolsen.mathops.views.quizoptions
 
 import android.os.Bundle
 import android.view.*
@@ -8,20 +8,20 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import org.chrisolsen.mathops.R
-import org.chrisolsen.mathops.databinding.GameOptionsFragmentBinding
+import org.chrisolsen.mathops.databinding.FragmentQuizOptionsBinding
 
-class GameOptionsFragment : Fragment() {
+class QuizOptionsFragment : Fragment() {
 
     private var questionCount = 25
     private var operation = "+"
-    private lateinit var binding: GameOptionsFragmentBinding
+    private lateinit var binding: FragmentQuizOptionsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding =
-            DataBindingUtil.inflate(inflater, R.layout.game_options_fragment, container, false)
+            DataBindingUtil.inflate(inflater, R.layout.fragment_quiz_options, container, false)
 
         setHasOptionsMenu(true)
         return binding.root
@@ -30,7 +30,7 @@ class GameOptionsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.startGame.setOnClickListener { v: View -> startGame(v) }
+        binding.startQuiz.setOnClickListener { v: View -> startQuiz(v) }
         binding.addition.setOnClickListener { operation = "+" }
         binding.subtraction.setOnClickListener { operation = "-" }
         binding.multiplication.setOnClickListener { operation = "x" }
@@ -48,12 +48,12 @@ class GameOptionsFragment : Fragment() {
         })
     }
 
-    private fun startGame(view: View) {
+    private fun startQuiz(view: View) {
         view
             .findNavController()
             .navigate(
-                GameOptionsFragmentDirections
-                    .actionGameOptionsFragmentToGameFragment(questionCount, operation)
+                QuizOptionsFragmentDirections
+                    .actionQuizOptionsFragmentToQuizFragment(questionCount, operation)
             )
     }
 
@@ -63,8 +63,8 @@ class GameOptionsFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_game_stats -> {
-                view?.findNavController()?.navigate(R.id.gameLogsFragment)
+            R.id.menu_quiz_stats -> {
+                view?.findNavController()?.navigate(R.id.quizLogsFragment)
                 return true
             }
         }

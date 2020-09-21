@@ -6,34 +6,8 @@ import androidx.room.PrimaryKey
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Entity(tableName = "questions")
-data class Question(
-    @ColumnInfo(name = "quiz_id")
-    val quizId: Long,
-    val value1: Int,
-    val value2: Int,
-    val operation: String,
-    var answer: Int = 0,
-    var correct: Boolean = false,
-    var response: Int = 0,
-    var time: Int = 0
-) {
-    @PrimaryKey(autoGenerate = true)
-    var uuid: Long = 0
-
-    fun calculate() {
-        answer = when (operation) {
-            "+" -> value1 + value2
-            "/" -> value1 / value2
-            "x" -> value1 * value2
-            "-" -> value1 - value2
-            else -> throw Exception("Invalid operation")
-        }
-    }
-}
-
-@Entity(tableName = "games")
-data class Game(
+@Entity(tableName = "quizzes")
+data class Quiz(
     @ColumnInfo(name = "question_count")
     val questionCount: Int,
     @ColumnInfo(name = "correct_count")

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_game_stats"
+        android:id="@+id/menu_quiz_stats"
         android:icon="@drawable/ic_bar_chart"
         android:title="Stats"
         app:showAsAction="always" />

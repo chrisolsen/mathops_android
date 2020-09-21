@@ -1,4 +1,4 @@
-package org.chrisolsen.mathops.views.game
+package org.chrisolsen.mathops.views.quiz
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -13,52 +13,52 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import kotlinx.android.synthetic.main.game_fragment.*
+import kotlinx.android.synthetic.main.fragment_quiz.*
 import kotlinx.coroutines.*
 import org.chrisolsen.mathops.R
-import org.chrisolsen.mathops.databinding.GameFragmentBinding
+import org.chrisolsen.mathops.databinding.FragmentQuizBinding
 import org.chrisolsen.mathops.models.Question
 
-class GameFragment : Fragment() {
-    private val TAG = "GameFragment"
+class QuizFragment : Fragment() {
+    private val TAG = "QuizFragment"
 
-    private lateinit var viewModel: GameViewModel
-    private lateinit var binding: GameFragmentBinding
+    private lateinit var viewModel: QuizViewModel
+    private lateinit var binding: FragmentQuizBinding
     private var answerAnimation: AnimatorSet? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.game_fragment, container, false)
-        viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_quiz, container, false)
+        viewModel = ViewModelProvider(this).get(QuizViewModel::class.java)
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val args = GameFragmentArgs.fromBundle(requireArguments())
+        val args = QuizFragmentArgs.fromBundle(requireArguments())
 
         // initialization
         val banner = binding.banner
-        banner.gamescoreBackground.alpha = 0f
-        banner.gamescoreForeground.y = Resources.getSystem().displayMetrics.heightPixels.toFloat()
+        banner.quizscoreBackground.alpha = 0f
+        banner.quizscoreForeground.y = Resources.getSystem().displayMetrics.heightPixels.toFloat()
 
-        banner.gamescorePlayAgain.setOnClickListener { view: View ->
-            banner.gamescoreBackground.animate().alpha(0f)
-            banner.gamescoreForeground.animate().run {
+        banner.quizscorePlayAgain.setOnClickListener { view: View ->
+            banner.quizscoreBackground.animate().alpha(0f)
+            banner.quizscoreForeground.animate().run {
                 y(Resources.getSystem().displayMetrics.heightPixels.toFloat())
                 interpolator = AnticipateOvershootInterpolator()
                 duration = 500
             }
             ObjectAnimator.ofInt(binding.progressBar, "progress", 0).start()
-            startGame(args.questionCount, args.operation)
+            startQuiz(args.questionCount, args.operation)
         }
 
-        startGame(args.questionCount, args.operation)
+        startQuiz(args.questionCount, args.operation)
     }
 
-    private fun startGame(questionCount: Int, operation: String) {
+    private fun startQuiz(questionCount: Int, operation: String) {
         GlobalScope.launch {
             viewModel.startQuiz(questionCount, operation)
             withContext(Dispatchers.Main) {
@@ -91,16 +91,16 @@ class GameFragment : Fragment() {
                     }
 
                     val banner = binding.banner
-                    banner.gamescoreScore.text = viewModel.percentCorrect.toString() + "%"
-                    banner.gamescoreText.text = when (viewModel.percentCorrect) {
+                    banner.quizscoreScore.text = viewModel.percentCorrect.toString() + "%"
+                    banner.quizscoreText.text = when (viewModel.percentCorrect) {
                         in 0..50 -> "Keep Trying!"
                         in 51..60 -> "Getting Better!"
                         in 61..79 -> "Keep It Up!"
                         in 80..89 -> "Good Job!"
                         else -> "Great Work!!"
                     }
-                    banner.gamescoreBackground.animate().alpha(1f)
-                    banner.gamescoreForeground.animate().run {
+                    banner.quizscoreBackground.animate().alpha(1f)
+                    banner.quizscoreForeground.animate().run {
                         y(200f)
                         interpolator = AnticipateOvershootInterpolator()
                         duration = 1000

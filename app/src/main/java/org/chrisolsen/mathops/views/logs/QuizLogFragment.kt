@@ -8,20 +8,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import kotlinx.android.synthetic.main.game_log_fragment.*
+import kotlinx.android.synthetic.main.fragment_quiz_log.*
 import org.chrisolsen.mathops.R
 
-class GameLogFragment : Fragment() {
+class QuizLogFragment : Fragment() {
 
     companion object {
-        private const val TAG = "GameLogFragment"
+        private const val TAG = "QuizLogFragment"
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.game_log_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_quiz_log, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,10 +31,10 @@ class GameLogFragment : Fragment() {
             Log.d(TAG, "onViewCreated: creating fragments")
             val pagerAdapter = ViewPagerAdapter(it.supportFragmentManager, 0)
             pagerAdapter.fragments = listOf(
-                GameLogListFragment.newInstance("Add", "+"),
-                GameLogListFragment.newInstance("Subtract", "-"),
-                GameLogListFragment.newInstance("Multiply", "x"),
-                GameLogListFragment.newInstance("Divide", "/")
+                QuizLogListFragment.newInstance("Add", "+"),
+                QuizLogListFragment.newInstance("Subtract", "-"),
+                QuizLogListFragment.newInstance("Multiply", "x"),
+                QuizLogListFragment.newInstance("Divide", "/")
             )
             viewPager.adapter = pagerAdapter
             viewPager.currentItem = 0
@@ -44,7 +44,7 @@ class GameLogFragment : Fragment() {
     class ViewPagerAdapter(fm: FragmentManager, behavior: Int) :
         FragmentPagerAdapter(fm, behavior) {
         val TAG = "ViewPagerAdapter"
-        lateinit var fragments: List<GameLogListFragment>
+        lateinit var fragments: List<QuizLogListFragment>
 
         override fun getPageTitle(position: Int): CharSequence? {
             return fragments[position].title

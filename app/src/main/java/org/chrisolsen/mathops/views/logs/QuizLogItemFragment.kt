@@ -7,27 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.chrisolsen.mathops.R
-import org.chrisolsen.mathops.models.Game
+import org.chrisolsen.mathops.models.Quiz
 
-class GameLogItemFragment private constructor(private val game: Game) : Fragment() {
+class QuizLogItemFragment private constructor(private val quiz: Quiz) : Fragment() {
 
-    private val TAG = "GameLogItemFragment"
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val TAG = "QuizLogItemFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        Log.d(TAG, "onCreateView: inflating gamelogitemfragment")
-        return inflater.inflate(R.layout.fragment_game_log_item, container, false)
+        Log.d(TAG, "onCreateView: inflating quizlogitemfragment")
+        return inflater.inflate(R.layout.fragment_quiz_log_item, container, false)
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(game: Game) = GameLogItemFragment(game)
+        fun newInstance(quiz: Quiz) = QuizLogItemFragment(quiz)
     }
 }
