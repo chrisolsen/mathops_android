@@ -85,7 +85,7 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
         quizWeights.keys.forEach { question ->
             quizWeights.get(question)?.let { weight ->
                 for (i in 0..weight) {
-                    questionPool.add(question)
+                    questionPool.add(question.copy())
                 }
             }
         }
