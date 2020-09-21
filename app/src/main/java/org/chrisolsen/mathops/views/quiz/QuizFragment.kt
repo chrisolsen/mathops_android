@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.fragment_quiz.*
 import kotlinx.coroutines.*
 import org.chrisolsen.mathops.R
@@ -53,6 +54,10 @@ class QuizFragment : Fragment() {
             }
             ObjectAnimator.ofInt(binding.progressBar, "progress", 0).start()
             startQuiz(args.questionCount, args.operation)
+        }
+
+        banner.quizscoreDone.setOnClickListener { view: View ->
+            view.findNavController().navigateUp()
         }
 
         startQuiz(args.questionCount, args.operation)
