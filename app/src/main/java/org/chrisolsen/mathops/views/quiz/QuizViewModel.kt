@@ -1,7 +1,6 @@
 package org.chrisolsen.mathops.views.quiz
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import org.chrisolsen.mathops.models.*
 import java.util.*
@@ -93,12 +92,11 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
         val questionPool = mutableListOf<Question>()
         quizWeights.keys.forEach { question ->
             quizWeights.get(question)?.let { weight ->
-                for (i in 0..weight) {
+                for (i in 1..weight) {
                     questionPool.add(question.copy())
                 }
             }
         }
-        Log.d(TAG, "startQuiz: quizWeights => ${quizWeights.size}")
 
         // pluck out questions from weighted list
         questions = mutableListOf<Question>()
