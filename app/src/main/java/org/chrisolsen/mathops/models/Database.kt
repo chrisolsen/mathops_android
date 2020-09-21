@@ -19,6 +19,16 @@ interface QuizDao {
 
     @Update
     suspend fun update(quiz: Quiz)
+
+    @Query(
+        """select 
+        value1 || operation || value2 as equation, 
+        1+cast(round(9 * (1.0 - (1.0 * sum(correct) / count(*))), 0) as int) as weight 
+        from questions 
+        where operation = :operation and time > 0 
+        group by equation"""
+    )
+    suspend fun getWeights(operation: String): List<QuestionWeight>
 }
 
 @Dao

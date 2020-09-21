@@ -1,6 +1,7 @@
 package org.chrisolsen.mathops.views.quiz
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import org.chrisolsen.mathops.models.*
 import java.util.*
@@ -50,6 +51,12 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
         quiz = Quiz(questionCount = questionCount, operation = operation, timestamp = Date().time)
         quiz.uuid = quizDao.insert(quiz)
 
+        // weight map
+        val weightMap = HashMap<String, Int>()
+        quizDao.getWeights(operation).forEach { qw ->
+            weightMap[qw.equation] = qw.weight
+        }
+
         // get weights from previous quizzes...for now everything is 1
         val quizWeights = HashMap<Question, Int>()
         for (i in 2..9) {
@@ -76,7 +83,9 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
                     else -> throw Exception("Invalid operation")
                 }
                 question.calculate()
-                quizWeights.set(question, 1)
+
+                val weight = weightMap["${question.value1}${operation}${question.value2}"]
+                quizWeights.set(question, weight ?: 1)
             }
         }
 
@@ -89,6 +98,7 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
+        Log.d(TAG, "startQuiz: quizWeights => ${quizWeights.size}")
 
         // pluck out questions from weighted list
         questions = mutableListOf<Question>()
