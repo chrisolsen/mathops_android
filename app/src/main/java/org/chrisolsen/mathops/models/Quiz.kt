@@ -23,8 +23,10 @@ data class Quiz(
         get() = dateFormatter.format(Date(this.timestamp))
     val timePerQuestion: String
         get() = String.format("%.1f", duration / 1000f / questionCount)
-    val score: String
+    val percent: String
         get() = String.format("%.0f", 100f * correctCount / questionCount)
+    val score: String
+        get() = "$correctCount / $questionCount"
 
     companion object {
         val dateFormatter = SimpleDateFormat("MMM d, yyyy")

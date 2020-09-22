@@ -17,9 +17,9 @@
 
         <TextView
             android:id="@+id/log_date"
+            style="@style/AppTheme.Light.Text.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/AppTheme.Light.Text.Small"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:text="@{ quiz.happenedOn }"
@@ -49,11 +49,22 @@
             app:layout_constraintStart_toEndOf="@+id/log_time_per_question" />
 
         <TextView
+            android:id="@+id/log_fraction"
+            style="@style/AppTheme.Light.Text.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{ quiz.score }"
+            app:layout_constraintBottom_toBottomOf="@+id/log_date"
+            app:layout_constraintEnd_toEndOf="@+id/log_percent"
+            app:layout_constraintTop_toTopOf="@+id/log_date"
+            tools:text="47/50" />
+
+        <TextView
             android:id="@+id/log_percent"
             style="@style/AppTheme.Text.Question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{ quiz.score }"
+            android:text="@{ quiz.percent }"
             app:layout_constraintBaseline_toBaselineOf="@+id/log_time_per_question"
             app:layout_constraintEnd_toStartOf="@+id/percentSign"
             tools:text="94" />
