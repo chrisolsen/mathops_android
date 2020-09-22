@@ -1,13 +1,13 @@
 package org.chrisolsen.mathops.views.logs
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_quiz_log.*
 import org.chrisolsen.mathops.R
 
@@ -25,38 +25,31 @@ class QuizLogFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        tabLayout.setupWithViewPager(viewPager)
-        Log.d(TAG, "onViewCreated: ")
         activity?.let {
-            Log.d(TAG, "onViewCreated: creating fragments")
-            val pagerAdapter = ViewPagerAdapter(it.supportFragmentManager, 0)
-            pagerAdapter.fragments = listOf(
-                QuizLogListFragment.newInstance("Add", "+"),
-                QuizLogListFragment.newInstance("Subtract", "-"),
-                QuizLogListFragment.newInstance("Multiply", "x"),
-                QuizLogListFragment.newInstance("Divide", "/")
-            )
+            val pagerAdapter = ViewPagerAdapter(it)
             viewPager.adapter = pagerAdapter
             viewPager.currentItem = 0
+
+            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                tab.text = pagerAdapter.fragments[position].title
+            }.attach()
         }
     }
 
-    class ViewPagerAdapter(fm: FragmentManager, behavior: Int) :
-        FragmentPagerAdapter(fm, behavior) {
-        val TAG = "ViewPagerAdapter"
-        lateinit var fragments: List<QuizLogListFragment>
+    class ViewPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+        var fragments: List<QuizLogListFragment> = listOf(
+            QuizLogListFragment.newInstance("Add", "+"),
+            QuizLogListFragment.newInstance("Subtract", "-"),
+            QuizLogListFragment.newInstance("Multiply", "x"),
+            QuizLogListFragment.newInstance("Divide", "/")
+        )
 
-        override fun getPageTitle(position: Int): CharSequence? {
-            return fragments[position].title
+        override fun getItemCount(): Int {
+            return fragments.size
         }
 
-        override fun getItem(position: Int): Fragment {
-            Log.d(TAG, "getItem: $position")
+        override fun createFragment(position: Int): Fragment {
             return fragments[position]
-        }
-
-        override fun getCount(): Int {
-            return 4
         }
     }
 }
